@@ -1,10 +1,30 @@
+import React from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ColorModeProvider } from "./context/ColorModeContext";
+import { lightTheme, darkTheme } from "./themes/themes";
+import { Routes, Route } from "react-router-dom";
+import About from "./pages/about/About";
+import SignUp from "./pages/signup/SignUp";
+import LogIn from "./pages/login/LogIn";
 import "./App.scss";
 
 function App() {
   return (
-    <div className="App">
-      <p>Hello!</p>
-    </div>
+    <ColorModeProvider>
+      {(mode) => (
+        <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
+          <CssBaseline />
+          <div className="App">
+            <Routes>
+              <Route path="/" element={<About />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<LogIn />} />
+            </Routes>
+          </div>
+        </ThemeProvider>
+      )}
+    </ColorModeProvider>
   );
 }
 
