@@ -1,0 +1,25 @@
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url(../../assets/images/about-bg.jpg);
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    filter: brightness(0.5);
+
+    mask-image: url(../../assets/images/ink-mask.gif);
+    mask-size: cover;
+    mask-position: center;
+  }
+  &.content-title {
+    color: white;
+  }
+}
