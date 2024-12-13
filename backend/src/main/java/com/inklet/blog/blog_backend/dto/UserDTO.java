@@ -1,9 +1,15 @@
 package com.inklet.blog.blog_backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserDTO {
+    @NotBlank(message = "Username cannot be empty")
     private String username;
+    @NotBlank(message = "Nickname cannot be empty")
     private String nickname;
+    @NotBlank(message = "Email cannot be empty")
     private String email;
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 
     public String getUsername() {
