@@ -9,7 +9,7 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     //add this key to environment variable in prod
-    private final String SECRET_KEY = "N8x7D8A1LqC2oB9V4YpQz23xaEwR3H6T5WJ1LrC6XvP8FbRqSdV8TwPnXoSq";
+    private final String SECRET_KEY = "DSAFGKASksjdqwjeOPWQPROJQWKFASLKFASKLRJWQJRWQIJRQWIJ";
     private final long EXPIRATION_TIME = 86400000; // one day
 
     public String generateToken(String username) {

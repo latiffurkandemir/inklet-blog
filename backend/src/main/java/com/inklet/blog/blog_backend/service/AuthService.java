@@ -29,7 +29,7 @@ public class AuthService {
         Optional<User> user = userRepository.findByUsername(loginDTO.getUsername());
 
         if (user.isEmpty()) {
-            throw new InputNotFoundException("Username '" + loginDTO.getUsername() + "is not found");
+            throw new InputNotFoundException("Username '" + loginDTO.getUsername() + "' is not found");
         }
 
         if (!passwordEncoder.matches(loginDTO.getPassword(),user.get().getPassword())){

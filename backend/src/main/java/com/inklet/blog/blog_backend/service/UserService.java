@@ -27,7 +27,7 @@ public class UserService {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new InputAlreadyExistsException("Username '" + userDTO.getUsername() + "' already exists.");
         }
-        if (userRepository.findByUsername(userDTO.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new InputAlreadyExistsException("Email '" + userDTO.getEmail() + "' already exists");
         }
 
