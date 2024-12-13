@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import About from "./pages/about/About";
 import SignUp from "./pages/signup/SignUp";
 import LogIn from "./pages/login/LogIn";
+import PasswordReset from "./pages/password-reset/PasswordReset";
 import "./App.scss";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
               <Route path="/" element={<About />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<LogIn />} />
+              <Route path="/password-reset" element={<PasswordReset />} />
             </Routes>
           </div>
         </ThemeProvider>
