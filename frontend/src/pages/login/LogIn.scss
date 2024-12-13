@@ -1,0 +1,13 @@
+@import "../../styles/variables.scss";
+
+.log-in {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: var(--secondary-color);
+
+  img:hover {
+    filter: brightness(0.9) contrast(1.1);
+  }
+}
