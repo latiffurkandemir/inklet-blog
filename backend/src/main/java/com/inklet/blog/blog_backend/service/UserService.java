@@ -30,7 +30,6 @@ public class UserService {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new InputAlreadyExistsException("Email '" + userDTO.getEmail() + "' already exists");
         }
-
         User user = new User(
                 userDTO.getUsername(),
                 userDTO.getNickname(),
