@@ -1,19 +1,69 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  FormLabel,
+  FormControl,
+  Link,
+  TextField,
+  Typography,
+  Card,
+  Stack,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
+import { postData } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 import "./SignUp.scss";
 
 function SignUp() {
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const capitalize = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const requiredFields = ["email", "nickname", "username", "password"];
+    for (let field of requiredFields) {
+      if (!formData[field]) {
+        setError(`${capitalize(field)} is required.`);
+        setLoading(false);
+        return;
+      }
+    }
+
+    try {
+      const result = await postData("api/users/signup", formData);
+      console.log("Success:", result);
+      navigate("/login");
+    } catch (err) {
+      setError(err.response?.data || "An error occurred.");
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleShowPasswordChange = (e) => {
+    setShowPassword(e.target.checked);
+  };
+
   return (
     <div className="sign-up">
       <Stack
@@ -40,6 +90,11 @@ function SignUp() {
             alt="Inklet Logo"
             style={{ height: "80px", cursor: "pointer" }}
           />
+          {error && (
+            <Alert severity="error" sx={{ marginBottom: 2 }}>
+              {error}
+            </Alert>
+          )}
           <Box
             component="form"
             noValidate
@@ -49,6 +104,7 @@ function SignUp() {
               width: "100%",
               gap: 2,
             }}
+            onSubmit={handleSubmit}
           >
             <FormControl>
               <FormLabel htmlFor="email">Email</FormLabel>
@@ -56,12 +112,13 @@ function SignUp() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="john.doe@email.com"
+                placeholder="user@mail.com"
                 autoFocus
                 required
                 fullWidth
                 variant="outlined"
                 color="accent"
+                onChange={handleChange}
               />
             </FormControl>
             <FormControl>
@@ -76,6 +133,7 @@ function SignUp() {
                 fullWidth
                 variant="outlined"
                 color="accent"
+                onChange={handleChange}
               />
             </FormControl>
             <FormControl>
@@ -90,6 +148,7 @@ function SignUp() {
                 fullWidth
                 variant="outlined"
                 color="accent"
+                onChange={handleChange}
               />
             </FormControl>
             <FormControl>
@@ -97,7 +156,7 @@ function SignUp() {
               <TextField
                 name="password"
                 placeholder="••••••"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
                 autoFocus
@@ -105,29 +164,39 @@ function SignUp() {
                 fullWidth
                 variant="outlined"
                 color="accent"
+                onChange={handleChange}
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="visibility" color="accent" />}
+              control={
+                <Checkbox
+                  checked={showPassword}
+                  onChange={handleShowPasswordChange}
+                  color="accent"
+                />
+              }
               label="Show password"
             />
             <Button
-              sx={{
-                backgroundColor: "var(--accent-color)",
-                color: "var(--primary-color)",
-              }}
+              sx={{ color: "var(--primary-color)" }}
+              color="accent"
               type="submit"
               fullWidth
               variant="contained"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </Box>
           <Divider>or</Divider>
           <Typography sx={{ textAlign: "center" }}>
             Have an account?{" "}
             <Link
-              href="/signup"
+              href="/login"
               variant="body2"
               sx={{ color: "var(--accent-color)", alignSelf: "center" }}
             >

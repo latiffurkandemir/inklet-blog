@@ -1,19 +1,81 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-import Stack from "@mui/material/Stack";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  FormLabel,
+  FormControl,
+  Link,
+  TextField,
+  Typography,
+  Card,
+  Stack,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { postData } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 import "./LogIn.scss";
 
 function LogIn() {
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
+
+  const capitalize = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const requiredFields = ["username", "password"];
+    for (let field of requiredFields) {
+      if (!formData[field]) {
+        setError(`${capitalize(field)} is required.`);
+        setLoading(false);
+        return;
+      }
+    }
+
+    try {
+      const result = await postData("api/auth/login", formData);
+      console.log("Success:", result);
+      if (rememberMe) {
+        localStorage.setItem("username", formData.username);
+      } else {
+        localStorage.removeItem("username");
+      }
+      navigate("/home");
+    } catch (err) {
+      setError(err.response?.data || "An error occurred.");
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setFormData((prevData) => ({ ...prevData, username: storedUsername }));
+      setRememberMe(true);
+    }
+  }, []);
+
   return (
     <div className="log-in">
       <Stack
@@ -40,9 +102,15 @@ function LogIn() {
             alt="Inklet Logo"
             style={{ height: "80px", cursor: "pointer" }}
           />
+          {error && (
+            <Alert severity="error" sx={{ marginBottom: 2 }}>
+              {error}
+            </Alert>
+          )}
           <Box
             component="form"
             noValidate
+            onSubmit={handleSubmit}
             sx={{
               display: "flex",
               flexDirection: "column",
@@ -60,8 +128,10 @@ function LogIn() {
                 autoFocus
                 required
                 fullWidth
+                value={formData.username}
                 variant="outlined"
                 color="accent"
+                onChange={handleChange}
               />
             </FormControl>
             <FormControl>
@@ -75,26 +145,38 @@ function LogIn() {
                 autoFocus
                 required
                 fullWidth
+                value={formData.password}
                 variant="outlined"
                 color="accent"
+                onChange={handleChange}
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="remember" color="accent" />}
+              control={
+                <Checkbox
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                  color="accent"
+                />
+              }
               label="Remember me"
             />
             <Button
-              sx={{
-                backgroundColor: "var(--accent-color)",
-                color: "var(--primary-color)",
-              }}
+              sx={{ color: "var(--primary-color)" }}
+              color="accent"
               type="submit"
               fullWidth
               variant="contained"
+              disabled={loading}
             >
-              Log In
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Log In"
+              )}
             </Button>
             <Link
+              href="/password-reset"
               component="button"
               type="button"
               variant="body2"
