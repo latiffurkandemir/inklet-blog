@@ -12,11 +12,11 @@ public class BlogBackendApplication {
 		SpringApplication.run(BlogBackendApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner helloWorldRunner() {
-		return args -> {
-			System.out.println("Hello, World!");
-		};
-	}
+//	@Bean
+//	public CommandLineRunner helloWorldRunner() {
+//		return args -> {
+//			System.out.println("Hello, World!");
+//		};
+//	}
 
 }
