@@ -21,9 +21,7 @@ public class Blog {
     @Column(name = "content")
     private String content;
 
-    @ManyToOne(
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}
-    )
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private User user;
 
