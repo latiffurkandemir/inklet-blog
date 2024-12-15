@@ -23,7 +23,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // disable csrf protection
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/signup", "/api/auth/login").permitAll() // permit these endpoints
+                        .requestMatchers("/api/users/signup",
+                                "/api/auth/login",
+                                "/api/blogs/create",
+                                "api/users/profile").permitAll() // permit these endpoints
                         .requestMatchers("/", "/error").permitAll()
                         .requestMatchers("/favicon.ico","/actuator/mappings").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
