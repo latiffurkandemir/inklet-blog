@@ -41,11 +41,24 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<BlogListDTO> getAllBlogs(String username) {
         List<BlogListDTO> blogListDTO = blogRepository.findBlogsByUsername(username);
-        if (blogListDTO==null){
+        if (blogListDTO == null) {
             return null;
         }
 
         return blogListDTO;
+    }
+
+    @Override
+    @Transactional
+    public void deleteBlog(int id, String username) {
+        Blog blog = blogRepository.findById(id).orElseThrow(
+                () -> new InputNotFoundException("Blog not found with id : " + id));
+
+        if (!blog.getUser().getUsername().equals(username)){
+            throw new SecurityException("You are not authorized to delete this blog");
+        }
+
+        blogRepository.delete(blog);
     }
 
 }

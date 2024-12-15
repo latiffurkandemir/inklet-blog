@@ -10,4 +10,6 @@ public interface BlogService {
     void createBlog(BlogDTO blogDTO, String username);
 
     List<BlogListDTO> getAllBlogs(String username);
+
+    void deleteBlog(int id, String username);
 }

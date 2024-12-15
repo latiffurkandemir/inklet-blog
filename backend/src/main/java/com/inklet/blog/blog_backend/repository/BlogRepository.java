@@ -6,11 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface BlogRepository extends JpaRepository<Blog,Integer> {
+public interface BlogRepository extends JpaRepository<Blog, Integer> {
 
 
     @Query("SELECT new com.inklet.blog.blog_backend.dto.BlogListDTO(b.id, b.title, b.content) FROM Blog b WHERE b.user.username = :username")
     List<BlogListDTO> findBlogsByUsername(String username);
+
 
 }
