@@ -40,5 +40,13 @@ public class BlogController {
         return ResponseEntity.ok(blogs);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteBlog(@Valid @PathVariable int id,HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtTokenProvider.getUsernameFromToken(token);
+        blogService.deleteBlog(id,username);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }
