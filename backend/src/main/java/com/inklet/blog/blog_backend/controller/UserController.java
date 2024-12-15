@@ -24,6 +24,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
+
 //    @GetMapping("/signup")
 //    public ResponseEntity<String> getSignupInfo() {
 //        return ResponseEntity.ok("Use POST method to sign up.");

@@ -26,7 +26,7 @@ public class BlogController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> createBlog(@Valid @RequestBody BlogDTO blogDTO, HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7);
+        String token = request.getHeader("Authorization").substring(7);//get token from request
         String username = jwtTokenProvider.getUsernameFromToken(token);
         blogService.createBlog(blogDTO, username);
         return ResponseEntity.status(HttpStatus.CREATED).build();

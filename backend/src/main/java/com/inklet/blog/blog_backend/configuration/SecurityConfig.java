@@ -25,7 +25,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/signup", "/api/auth/login").permitAll() // permit these endpoints
                         .requestMatchers("/", "/error").permitAll()
-                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("/favicon.ico","/actuator/mappings").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated() // authentication is needed for any other requests
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // added JWT filter
