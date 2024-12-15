@@ -2,6 +2,7 @@ package com.inklet.blog.blog_backend.service;
 
 import com.inklet.blog.blog_backend.dto.BlogDTO;
 import com.inklet.blog.blog_backend.entity.Blog;
+import com.inklet.blog.blog_backend.dto.BlogListDTO;
 import com.inklet.blog.blog_backend.entity.User;
 import com.inklet.blog.blog_backend.exception.InputNotFoundException;
 import com.inklet.blog.blog_backend.repository.BlogRepository;
@@ -9,7 +10,7 @@ import com.inklet.blog.blog_backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -35,6 +36,16 @@ public class BlogServiceImpl implements BlogService {
         user.addBlog(blog);
 
         blogRepository.save(blog);
+    }
+
+    @Override
+    public List<BlogListDTO> getAllBlogs(String username) {
+        List<BlogListDTO> blogListDTO = blogRepository.findBlogsByUsername(username);
+        if (blogListDTO==null){
+            return null;
+        }
+
+        return blogListDTO;
     }
 
 }
