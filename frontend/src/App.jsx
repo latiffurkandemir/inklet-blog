@@ -8,6 +8,10 @@ import About from "./pages/about/About";
 import SignUp from "./pages/signup/SignUp";
 import LogIn from "./pages/login/LogIn";
 import PasswordReset from "./pages/password-reset/PasswordReset";
+import MainPage from "./pages/home/MainPage";
+import UserProfile from "./pages/profile/Profile";
+import CreateBlog from "./pages/create/CreateBlog";
+import Settings from "./pages/settings/Settings";
 import "./App.scss";
 
 function App() {
@@ -22,6 +26,10 @@ function App() {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<LogIn />} />
               <Route path="/password-reset" element={<PasswordReset />} />
+              <Route path="/home" element={<MainPage />} />
+              <Route path="/profile" element={<UserProfile />} />
+              <Route path="/create" element={<CreateBlog />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </ThemeProvider>
