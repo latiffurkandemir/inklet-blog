@@ -1,7 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, Button, Box, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import DarkMode from "./DarkMode";
 import "../styles/variables.scss";
 
 function Header() {

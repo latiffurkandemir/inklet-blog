@@ -1,12 +1,12 @@
 import React from "react";
 import Aside from "../../components/Aside";
 
-function UserProfile() {
+function Settings() {
   return (
-    <div className="profile">
+    <div className="settings">
       <Aside />
     </div>
   );
 }
 
-export default UserProfile;
+export default Settings;
