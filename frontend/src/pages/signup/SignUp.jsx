@@ -15,7 +15,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { postData } from "../../services/api";
+import { createPost } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.scss";
 
@@ -49,7 +49,7 @@ function SignUp() {
     }
 
     try {
-      const result = await postData("api/users/signup", formData);
+      const result = await createPost("api/users/signup", formData);
       console.log("Success:", result);
       navigate("/login");
     } catch (err) {

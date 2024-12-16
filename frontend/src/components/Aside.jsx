@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AppBar from "./AppBar";
 import NavList from "./NavList";
-import { fetchData } from "../services/api";
+import { getUserProfile } from "../services/api";
 
 function Aside() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -20,10 +20,10 @@ function Aside() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUserData = async () => {
+    const fetchUserData = async () => {
       try {
-        const data = await fetchData("user"); // "/user" endpoint
-        setUser(data);
+        const userData = await getUserProfile();
+        setUser(userData);
       } catch (error) {
         console.error("Couldn't retrieve user information:", error);
       } finally {
@@ -31,7 +31,7 @@ function Aside() {
       }
     };
 
-    getUserData();
+    fetchUserData();
   }, []);
 
   const handleNavigation = (route) => {

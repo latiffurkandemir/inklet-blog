@@ -13,28 +13,31 @@ import UserProfile from "./pages/profile/Profile";
 import CreateBlog from "./pages/create/CreateBlog";
 import Settings from "./pages/settings/Settings";
 import "./App.scss";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <ColorModeProvider>
-      {(mode) => (
-        <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
-          <CssBaseline />
-          <div className="App">
-            <Routes>
-              <Route path="/" element={<About />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<LogIn />} />
-              <Route path="/password-reset" element={<PasswordReset />} />
-              <Route path="/home" element={<MainPage />} />
-              <Route path="/profile" element={<UserProfile />} />
-              <Route path="/create" element={<CreateBlog />} />
-              <Route path="/settings" element={<Settings />} />
-            </Routes>
-          </div>
-        </ThemeProvider>
-      )}
-    </ColorModeProvider>
+    <AuthProvider>
+      <ColorModeProvider>
+        {(mode) => (
+          <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
+            <CssBaseline />
+            <div className="App">
+              <Routes>
+                <Route path="/" element={<About />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<LogIn />} />
+                <Route path="/password-reset" element={<PasswordReset />} />
+                <Route path="/home" element={<MainPage />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/create" element={<CreateBlog />} />
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
+            </div>
+          </ThemeProvider>
+        )}
+      </ColorModeProvider>
+    </AuthProvider>
   );
 }
 
