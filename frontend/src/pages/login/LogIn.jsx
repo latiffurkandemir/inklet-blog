@@ -15,7 +15,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { postData } from "../../services/api";
+import { login } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import "./LogIn.scss";
 
@@ -26,48 +26,6 @@ function LogIn() {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
-  const capitalize = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const handleRememberMeChange = (e) => {
-    setRememberMe(e.target.checked);
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const requiredFields = ["username", "password"];
-    for (let field of requiredFields) {
-      if (!formData[field]) {
-        setError(`${capitalize(field)} is required.`);
-        setLoading(false);
-        return;
-      }
-    }
-
-    try {
-      const result = await postData("api/auth/login", formData);
-      console.log("Success:", result);
-      if (rememberMe) {
-        localStorage.setItem("username", formData.username);
-      } else {
-        localStorage.removeItem("username");
-      }
-      navigate("/home");
-    } catch (err) {
-      setError(err.response?.data || "An error occurred.");
-      console.error("Error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
@@ -75,6 +33,45 @@ function LogIn() {
       setRememberMe(true);
     }
   }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    if (!formData.username || !formData.password) {
+      setError("Username and Password are required.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { token } = await login(formData);
+
+      if (token) {
+        localStorage.setItem("token", token);
+
+        if (rememberMe) {
+          localStorage.setItem("username", formData.username);
+        } else {
+          localStorage.removeItem("username");
+        }
+
+        navigate("/home");
+      } else {
+        setError("Token alınamadı!");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.response?.data?.message || "Giriş başarısız!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="log-in">
@@ -132,6 +129,7 @@ function LogIn() {
                 variant="outlined"
                 color="accent"
                 onChange={handleChange}
+                autoComplete="username"
               />
             </FormControl>
             <FormControl>
@@ -142,7 +140,6 @@ function LogIn() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                autoFocus
                 required
                 fullWidth
                 value={formData.password}
@@ -155,7 +152,7 @@ function LogIn() {
               control={
                 <Checkbox
                   checked={rememberMe}
-                  onChange={handleRememberMeChange}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   color="accent"
                 />
               }

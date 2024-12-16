@@ -3,11 +3,9 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardMedia,
   Typography,
   Button,
 } from "@mui/material";
-import mock from "../assets/mocks/mock2.jpg";
 
 function BlogCard() {
   return (
@@ -19,7 +17,6 @@ function BlogCard() {
           marginBottom: 1,
         }}
       >
-        <CardMedia component="img" height="150" image={mock} alt="Image" />
         <CardContent>
           <Typography
             sx={{
