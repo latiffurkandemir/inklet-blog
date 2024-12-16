@@ -7,6 +7,7 @@ import com.inklet.blog.blog_backend.entity.User;
 import com.inklet.blog.blog_backend.exception.InputNotFoundException;
 import com.inklet.blog.blog_backend.repository.BlogRepository;
 import com.inklet.blog.blog_backend.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,11 +55,32 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogRepository.findById(id).orElseThrow(
                 () -> new InputNotFoundException("Blog not found with id : " + id));
 
-        if (!blog.getUser().getUsername().equals(username)){
+        if (!blog.getUser().getUsername().equals(username)) {
             throw new SecurityException("You are not authorized to delete this blog");
         }
 
         blogRepository.delete(blog);
+    }
+
+    @Override
+    @Transactional
+    public BlogDTO updateBlog(int id, BlogDTO blogDTO, String username) {
+        Blog blog = blogRepository.findById(id).orElseThrow(
+                () -> new InputNotFoundException("Blog not found with id : " + id));
+
+        if (!blog.getUser().getUsername().equals(username)) {
+            throw new SecurityException("You are not authorized to update this blog");
+        }
+
+        blog.setTitle(blog.getTitle());
+        blog.setContent(blogDTO.getContent());
+        //I could have done these mapper classes
+        Blog updatedBlog = blogRepository.save(blog);
+        BlogDTO updatedDTO = new BlogDTO();
+
+        updatedDTO.setTitle(updatedBlog.getTitle());
+        updatedDTO.setContent(updatedBlog.getContent());
+        return updatedDTO;
     }
 
 }
