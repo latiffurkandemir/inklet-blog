@@ -41,11 +41,20 @@ public class BlogController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBlog(@Valid @PathVariable int id,HttpServletRequest request) {
+    public ResponseEntity<Void> deleteBlog(@PathVariable int id, HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);
         String username = jwtTokenProvider.getUsernameFromToken(token);
-        blogService.deleteBlog(id,username);
+        blogService.deleteBlog(id, username);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BlogDTO> updateBlog(@PathVariable int id, @Valid @RequestBody BlogDTO blogDTO, HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtTokenProvider.getUsernameFromToken(token);
+        BlogDTO updatedDTO = blogService.updateBlog(id, blogDTO, username);
+
+        return new ResponseEntity<>(updatedDTO, HttpStatus.OK);
     }
 
 
