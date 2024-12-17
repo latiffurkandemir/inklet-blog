@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Aside from "../../components/Aside";
 import NavBar from "../../components/NavBar";
+import UserProfile from "../../components/UserProfile";
 
-function CreateBlog() {
+function ProfilePage() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -10,11 +11,12 @@ function CreateBlog() {
   };
 
   return (
-    <div className="create">
+    <div className="profile-page">
       <NavBar onMenuClick={handleDrawerToggle} />
       <Aside isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} />
+      <UserProfile />
     </div>
   );
 }
 
-export default CreateBlog;
+export default ProfilePage;
