@@ -50,6 +50,7 @@ public class User {
         this.password = password;
     }
 
+
     public Long getId() {
         return id;
     }
@@ -68,6 +69,10 @@ public class User {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {

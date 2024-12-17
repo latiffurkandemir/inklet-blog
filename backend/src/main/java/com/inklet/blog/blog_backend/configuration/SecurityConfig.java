@@ -26,9 +26,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/signup",
                                 "/api/auth/login",
                                 "/api/blogs/create",
-                                "api/users/profile",
-                                "api/blogs/all",
-                                "api/blogs/delete/{id}").permitAll() // permit these endpoints
+                                "/api/users/profile",
+                                "/api/blogs/all",
+                                "/api/blogs/delete/{id}",
+                                "/api/users/update").permitAll() // permit these endpoints
                         .requestMatchers("/", "/error").permitAll()
                         .requestMatchers("/favicon.ico", "/actuator/mappings").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
