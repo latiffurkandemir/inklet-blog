@@ -4,10 +4,11 @@ import com.inklet.blog.blog_backend.entity.Blog;
 import com.inklet.blog.blog_backend.dto.BlogListDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface BlogRepository extends JpaRepository<Blog, Integer> {
 
 
