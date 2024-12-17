@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'http://localhost:8080/api';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
+  timeout: 10000,
 });
 
 api.interceptors.request.use(
@@ -18,60 +19,88 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
-);
-
-api.interceptors.response.use(
-  (response) => response,
   (error) => {
-    if (error.response) {
-      console.error("API error:", error.response);
-      if (error.response.status === 401) {
-        const currentPath = window.location.pathname;
-        if (currentPath !== "/login") {
-          localStorage.removeItem("token");
-          window.location.href = "/login";
-        }
-      }
-    }
     return Promise.reject(error);
   }
 );
 
-export const fetchData = async (endpoint) => {
+export const login = async (credentials) => {
   try {
-    const response = await api.get(endpoint);
-    return response.data;
+    console.log('Login credentials:', credentials);
+    const response = await api.post('/auth/login', {
+      username: credentials.username,
+      password: credentials.password
+    });
+    console.log('Login response:', response);
+    return response;
   } catch (error) {
+    console.error('Login error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     throw error;
   }
 };
 
-export const postData = async (endpoint, data) => {
+export const logout = () => {
+  localStorage.removeItem('token');
+};
+
+export const getPosts = async () => {
   try {
-    const response = await api.post(endpoint, data);
+    const response = await api.get('/posts');
     return response.data;
   } catch (error) {
+    console.error('Error fetching posts:', error);
     throw error;
   }
 };
 
-export const updateData = async (endpoint, data) => {
+export const getPostById = async (id) => {
   try {
-    const response = await api.put(endpoint, data);
+    const response = await api.get(`/posts/${id}`);
     return response.data;
   } catch (error) {
+    console.error('Error fetching post:', error);
     throw error;
   }
 };
 
-export const deleteData = async (endpoint) => {
+export const createPost = async (postData) => {
   try {
-    const response = await api.delete(endpoint);
+    const response = await api.post('/posts', postData);
     return response.data;
   } catch (error) {
+    console.error('Error creating post:', error);
+    throw error;
+  }
+};
+export const updatePost = async (id, updatedData) => {
+  try {
+    const response = await api.put(`/posts/${id}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating post:', error);
+    throw error;
+  }
+};
+export const deletePost = async (id) => {
+  try {
+    const response = await api.delete(`/posts/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting post:', error);
     throw error;
   }
 };
 
-export default api;
+export const getUserProfile = async () => {
+  try {
+    const response = await api.get('/users/profile');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;
+  }
+};
