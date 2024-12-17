@@ -4,16 +4,16 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ColorModeProvider } from "./context/ColorModeContext";
 import { lightTheme, darkTheme } from "./themes/themes";
 import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./pages/about/About";
 import SignUp from "./pages/signup/SignUp";
 import LogIn from "./pages/login/LogIn";
-import PasswordReset from "./pages/password-reset/PasswordReset";
 import MainPage from "./pages/home/MainPage";
 import UserProfile from "./pages/profile/Profile";
 import CreateBlog from "./pages/create/CreateBlog";
 import Settings from "./pages/settings/Settings";
 import "./App.scss";
-import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
@@ -27,11 +27,39 @@ function App() {
                 <Route path="/" element={<About />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<LogIn />} />
-                <Route path="/password-reset" element={<PasswordReset />} />
-                <Route path="/home" element={<MainPage />} />
-                <Route path="/profile" element={<UserProfile />} />
-                <Route path="/create" element={<CreateBlog />} />
-                <Route path="/settings" element={<Settings />} />
+
+                <Route
+                  path="/home"
+                  element={
+                    <ProtectedRoute>
+                      <MainPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <UserProfile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/create"
+                  element={
+                    <ProtectedRoute>
+                      <CreateBlog />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
               </Routes>
             </div>
           </ThemeProvider>
