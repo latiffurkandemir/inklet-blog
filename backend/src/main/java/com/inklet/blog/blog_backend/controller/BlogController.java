@@ -3,6 +3,7 @@ package com.inklet.blog.blog_backend.controller;
 import com.inklet.blog.blog_backend.configuration.JwtTokenProvider;
 import com.inklet.blog.blog_backend.dto.BlogDTO;
 import com.inklet.blog.blog_backend.dto.BlogListDTO;
+import com.inklet.blog.blog_backend.dto.BlogWithCommentDTO;
 import com.inklet.blog.blog_backend.service.BlogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -40,12 +41,15 @@ public class BlogController {
         return ResponseEntity.ok(blogs);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BlogDTO> getBlogById(@PathVariable int id, HttpServletRequest request){
-        String token = request.getHeader("Authorization").substring(7);
-        String username = jwtTokenProvider.getUsernameFromToken(token);
-        BlogDTO blogDTO = blogService.getBlogById(id,username);
-        return new ResponseEntity<>(blogDTO,HttpStatus.OK);
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<BlogWithCommentDTO> getBlogWithComments(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        BlogWithCommentDTO blogWithCommentDTO = blogService.getBlogWithComments(id, page, size);
+        return ResponseEntity.ok(blogWithCommentDTO);
     }
 
     @DeleteMapping("/delete/{id}")

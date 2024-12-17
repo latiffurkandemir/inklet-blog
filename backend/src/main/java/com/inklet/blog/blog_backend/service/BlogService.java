@@ -3,6 +3,7 @@ package com.inklet.blog.blog_backend.service;
 
 import com.inklet.blog.blog_backend.dto.BlogDTO;
 import com.inklet.blog.blog_backend.dto.BlogListDTO;
+import com.inklet.blog.blog_backend.dto.BlogWithCommentDTO;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ public interface BlogService {
 
     BlogDTO updateBlogById(int id, BlogDTO blogDTO, String username);
 
-    BlogDTO getBlogById(int id, String username);
+    BlogWithCommentDTO getBlogWithComments(Long id, int page, int size);
 }

@@ -1,12 +1,20 @@
 package com.inklet.blog.blog_backend.service;
 
 import com.inklet.blog.blog_backend.dto.BlogDTO;
+import com.inklet.blog.blog_backend.dto.BlogWithCommentDTO;
+import com.inklet.blog.blog_backend.dto.CommentDTO;
 import com.inklet.blog.blog_backend.entity.Blog;
 import com.inklet.blog.blog_backend.dto.BlogListDTO;
+import com.inklet.blog.blog_backend.entity.Comment;
 import com.inklet.blog.blog_backend.entity.User;
 import com.inklet.blog.blog_backend.exception.InputNotFoundException;
 import com.inklet.blog.blog_backend.repository.BlogRepository;
+import com.inklet.blog.blog_backend.repository.CommentRepository;
 import com.inklet.blog.blog_backend.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +24,13 @@ import java.util.List;
 public class BlogServiceImpl implements BlogService {
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public BlogServiceImpl(BlogRepository blogRepository, UserRepository userRepository) {
+
+    public BlogServiceImpl(BlogRepository blogRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.blogRepository = blogRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -84,20 +95,31 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BlogDTO getBlogById(int id, String username) {
-        Blog blog = blogRepository.findById(id)
-                .orElseThrow(() -> new InputNotFoundException("Blog not found with id : " + id));
+    public BlogWithCommentDTO getBlogWithComments(Long id, int page, int size) {
+        // Fetch the blog from the database
+        Blog blog = blogRepository.findById(Math.toIntExact(id))
+                .orElseThrow(() -> new InputNotFoundException("Blog not found with id: " + id));
 
-        if ((!blog.getUser().getUsername().equals(username))) {
-            throw new SecurityException("You are not authorized to get this blog");
-        }
+        // Fetch paginated comments
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Comment> commentPage = commentRepository.findByBlogId(id, pageable);
 
-        BlogDTO blogDTO = new BlogDTO();
+        // Create BlogDTO and set fields
+        BlogWithCommentDTO blogWithCommentDTO = new BlogWithCommentDTO();
+        blogWithCommentDTO.setTitle(blog.getTitle());
+        blogWithCommentDTO.setContent(blog.getContent());
+        blogWithCommentDTO.setUsername(blog.getUser().getUsername());
 
-        blogDTO.setTitle(blog.getTitle());
-        blogDTO.setContent(blog.getContent());
+        // Convert Comment Page to DTO and add to the response
+        Page<CommentDTO> commentDTOPage = commentPage.map(comment -> new CommentDTO(
+                Math.toIntExact(comment.getId()),
+                comment.getContent(),
+                comment.getUser().getUsername()
+        ));
+        blogWithCommentDTO.setCommentList(commentDTOPage);
 
-        return blogDTO;
+        return blogWithCommentDTO;
     }
+
 
 }
