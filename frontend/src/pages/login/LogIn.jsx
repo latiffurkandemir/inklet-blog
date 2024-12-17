@@ -50,17 +50,18 @@ function LogIn() {
     }
 
     try {
-      const { token } = await login(formData);
+      const response = await login(formData);
+      console.log("Login response:", response);
 
-      if (token) {
-        localStorage.setItem("token", token);
-
+      if (response.data) {
+        localStorage.setItem("token", response.data);
         if (rememberMe) {
           localStorage.setItem("username", formData.username);
         } else {
           localStorage.removeItem("username");
         }
 
+        console.log("Token saved, navigating to home...");
         navigate("/home");
       } else {
         setError("Token alınamadı!");

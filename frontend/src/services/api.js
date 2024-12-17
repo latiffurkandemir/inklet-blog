@@ -27,20 +27,25 @@ api.interceptors.request.use(
 export const login = async (credentials) => {
   try {
     console.log('Login credentials:', credentials);
-    const response = await api.post('/auth/login', {
-      username: credentials.username,
-      password: credentials.password
-    });
+    const response = await api.post('/auth/login', credentials);
     console.log('Login response:', response);
+    const token = response.data;
+
+    if (token) {
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
     return response;
   } catch (error) {
-    console.error('Login error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status
-    });
+    console.error('Login error:', error);
     throw error;
   }
+};
+
+const token = localStorage.getItem('token');
+if (token) {
+  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };
 
 export const logout = () => {

@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AppBar from "./AppBar";
 import NavList from "./NavList";
-import { getUserProfile } from "../services/api";
+import { getUserProfile, logout } from "../services/api";
 
 function Aside() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -35,6 +35,11 @@ function Aside() {
   }, []);
 
   const handleNavigation = (route) => {
+    if (route === "/logout") {
+      logout();
+      navigate("/login");
+      return;
+    }
     navigate(route);
   };
 
@@ -52,7 +57,7 @@ function Aside() {
         open={isDrawerOpen}
         onClose={() => setDrawerOpen(false)}
         sx={{
-          display: { xs: "block", sm: "none" },
+          display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
             width: 240,
           },
@@ -97,7 +102,7 @@ function Aside() {
             height: "100vh",
             right: 0,
             top: 0,
-            mt: 4,
+            mt: 8,
             borderLeft: "1px solid var(--accent-color)",
           }}
         >
@@ -106,8 +111,21 @@ function Aside() {
               <Typography variant="body1">Loading...</Typography>
             </Box>
           ) : (
-            <Box sx={{ p: 2, textAlign: "center" }} />
+            <Box sx={{ p: 2, textAlign: "center" }}>
+              <Avatar
+                src={user?.profilePhoto}
+                alt="Profile Photo"
+                sx={{ width: 80, height: 80, margin: "0 auto" }}
+              />
+              <Typography variant="h6" sx={{ mt: 1 }}>
+                {user?.nickname || "Nickname"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {user?.username || "Username"}
+              </Typography>
+            </Box>
           )}
+          <Divider sx={{ borderColor: "var(--accent-color)" }} />
           <NavList handleNavigation={handleNavigation} />
         </Box>
       )}

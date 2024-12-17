@@ -4,12 +4,14 @@ import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CreateIcon from "@mui/icons-material/Create";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const navItems = [
   { text: "Home", icon: <HomeIcon />, route: "/home" },
   { text: "Profile", icon: <AccountCircleIcon />, route: "/profile" },
   { text: "Create Blog", icon: <CreateIcon />, route: "/create" },
   { text: "Settings", icon: <SettingsIcon />, route: "/settings" },
+  { text: "Logout", icon: <LogoutIcon />, route: "/logout" },
 ];
 
 function NavItem({ text, icon, onClick }) {
