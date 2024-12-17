@@ -1,42 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Drawer,
   Box,
   Divider,
   useMediaQuery,
   Typography,
-  Avatar,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import AppBar from "./AppBar";
 import NavList from "./NavList";
-import { getUserProfile, logout } from "../services/api";
+import { useUser } from "../context/UserContext";
 
-function Aside() {
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+function Aside({ isOpen, onClose }) {
+  const { user, loading, logout: handleLogout } = useUser();
   const isMobile = useMediaQuery("(max-width:900px)");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userData = await getUserProfile();
-        setUser(userData);
-      } catch (error) {
-        console.error("Couldn't retrieve user information:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const getInitial = user?.nickname
+    ? user.nickname.charAt(0).toUpperCase()
+    : "";
 
-    fetchUserData();
-  }, []);
-
-  const handleNavigation = (route) => {
+  const handleNavigation = async (route) => {
     if (route === "/logout") {
-      logout();
+      await handleLogout();
       navigate("/login");
       return;
     }
@@ -45,17 +31,11 @@ function Aside() {
 
   return (
     <div className="aside-menu">
-      <AppBar
-        user={user}
-        loading={loading}
-        onMenuClick={() => setDrawerOpen(true)}
-      />
-
       <Drawer
         variant="temporary"
         anchor="right"
-        open={isDrawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        open={isOpen}
+        onClose={onClose}
         sx={{
           display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
@@ -67,8 +47,8 @@ function Aside() {
         <Box
           sx={{ width: 240, borderLeft: "1px solid var(--accent-color)" }}
           role="presentation"
-          onClick={() => setDrawerOpen(false)}
-          onKeyDown={() => setDrawerOpen(false)}
+          onClick={() => onClose()}
+          onKeyDown={() => onClose()}
         >
           {loading ? (
             <Box sx={{ p: 2, textAlign: "center" }}>
@@ -76,11 +56,28 @@ function Aside() {
             </Box>
           ) : (
             <Box sx={{ p: 2, textAlign: "center" }}>
-              <Avatar
-                src={user?.profilePhoto}
-                alt="Profile Photo"
-                sx={{ width: 80, height: 80, margin: "0 auto" }}
-              />
+              <IconButton
+                edge="end"
+                color="primary"
+                aria-label="menu"
+                sx={{
+                  display: "block",
+                  color: "var(--primary-color)",
+                  backgroundColor: "var(--accent-color)",
+                  width: "60px",
+                  height: "60px",
+                  margin: "0 auto",
+                  borderRadius: "50%",
+                  "&:hover": {
+                    backgroundColor: "var(--accent-color)",
+                    opacity: 0.8,
+                  },
+                }}
+              >
+                <Typography color="white" sx={{ fontSize: "1.2rem" }}>
+                  {getInitial}
+                </Typography>
+              </IconButton>
               <Typography variant="h6" sx={{ mt: 1 }}>
                 {user?.nickname || "Nickname"}
               </Typography>
@@ -112,11 +109,28 @@ function Aside() {
             </Box>
           ) : (
             <Box sx={{ p: 2, textAlign: "center" }}>
-              <Avatar
-                src={user?.profilePhoto}
-                alt="Profile Photo"
-                sx={{ width: 80, height: 80, margin: "0 auto" }}
-              />
+              <IconButton
+                edge="end"
+                color="primary"
+                aria-label="menu"
+                sx={{
+                  display: "block",
+                  color: "var(--primary-color)",
+                  backgroundColor: "var(--accent-color)",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  margin: "0 auto",
+                  "&:hover": {
+                    backgroundColor: "var(--accent-color)",
+                    opacity: 0.8,
+                  },
+                }}
+              >
+                <Typography color="white" sx={{ fontSize: "1.2rem" }}>
+                  {getInitial}
+                </Typography>
+              </IconButton>
               <Typography variant="h6" sx={{ mt: 1 }}>
                 {user?.nickname || "Nickname"}
               </Typography>

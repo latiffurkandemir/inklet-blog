@@ -53,19 +53,24 @@ function LogIn() {
       const response = await login(formData);
       console.log("Login response:", response);
 
-      if (response.data) {
-        localStorage.setItem("token", response.data);
-        if (rememberMe) {
-          localStorage.setItem("username", formData.username);
-        } else {
-          localStorage.removeItem("username");
-        }
-
-        console.log("Token saved, navigating to home...");
-        navigate("/home");
-      } else {
+      if (!response.data) {
         setError("Token alınamadı!");
+        return;
       }
+
+      localStorage.setItem("token", response.data);
+
+      if (rememberMe) {
+        localStorage.setItem("username", formData.username);
+      } else {
+        localStorage.removeItem("username");
+      }
+
+      console.log("Token saved, navigating to home...");
+
+      setTimeout(() => {
+        navigate("/home", { replace: true });
+      }, 100);
     } catch (err) {
       console.error("Login error:", err);
       setError(err.response?.data?.message || "Giriş başarısız!");
