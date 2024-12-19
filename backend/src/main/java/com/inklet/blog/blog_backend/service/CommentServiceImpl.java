@@ -5,6 +5,7 @@ import com.inklet.blog.blog_backend.entity.Blog;
 import com.inklet.blog.blog_backend.entity.Comment;
 import com.inklet.blog.blog_backend.entity.User;
 import com.inklet.blog.blog_backend.exception.InputNotFoundException;
+import com.inklet.blog.blog_backend.exception.InvalidDataException;
 import com.inklet.blog.blog_backend.repository.BlogRepository;
 import com.inklet.blog.blog_backend.repository.CommentRepository;
 import com.inklet.blog.blog_backend.repository.UserRepository;
@@ -46,6 +47,21 @@ public class CommentServiceImpl implements CommentService {
         createCommentDTO.setContent(savedComment.getContent());
         return createCommentDTO;
 
+    }
+
+    @Override
+    @Transactional
+    public void deleteCommentById(int id, String username) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new InputNotFoundException("Comment not found with id: " + id));
+        if (!comment.getUser().getUsername().equals(username)) {
+            throw new InvalidDataException("You are not authorized to do this");
+        }
+
+        comment.setUser(null);
+        comment.setBlog(null);
+
+        commentRepository.delete(comment);
     }
 
 

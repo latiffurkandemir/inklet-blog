@@ -6,4 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CommentService {
 
     CreateCommentDTO createComment(CreateCommentDTO commentDTO, String username);
+
+    void deleteCommentById(int id, String username);
 }
