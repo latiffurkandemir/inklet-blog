@@ -30,7 +30,9 @@ public class SecurityConfig {
                                 "/api/blogs/all",
                                 "/api/blogs/all/feed",
                                 "/api/blogs/delete/{id}",
-                                "/api/users/update").permitAll() // permit these endpoints
+                                "/api/users/update",
+                                "api/comments/create",
+                                "api/comments/update").permitAll() // permit these endpoints
                         .requestMatchers("/", "/error").permitAll()
                         .requestMatchers("/favicon.ico", "/actuator/mappings").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()

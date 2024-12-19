@@ -1,5 +1,6 @@
 package com.inklet.blog.blog_backend.service;
 
+import com.inklet.blog.blog_backend.dto.CommentDTO;
 import com.inklet.blog.blog_backend.dto.CreateCommentDTO;
 import com.inklet.blog.blog_backend.entity.Blog;
 import com.inklet.blog.blog_backend.entity.Comment;
@@ -62,6 +63,21 @@ public class CommentServiceImpl implements CommentService {
         comment.setBlog(null);
 
         commentRepository.delete(comment);
+    }
+
+    @Override
+    @Transactional
+    public CommentDTO updateCommentById(CommentDTO commentDTO, String username) {
+        Comment comment = commentRepository.findById(commentDTO.getId())
+                .orElseThrow(() -> new InputNotFoundException("Comment not found with id: " + commentDTO.getId()));
+
+        if (!username.equals(comment.getUser().getUsername())) {
+            throw new InvalidDataException("You are not authorized to do this");
+        }
+        comment.setContent(commentDTO.getContent());
+        Comment savedComment = commentRepository.save(comment);
+        CommentDTO updated = new CommentDTO(Math.toIntExact(comment.getId()),comment.getContent(),comment.getUser().getUsername());
+        return updated;
     }
 
 

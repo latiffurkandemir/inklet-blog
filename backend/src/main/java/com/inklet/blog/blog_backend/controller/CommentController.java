@@ -1,6 +1,7 @@
 package com.inklet.blog.blog_backend.controller;
 
 import com.inklet.blog.blog_backend.configuration.JwtTokenProvider;
+import com.inklet.blog.blog_backend.dto.CommentDTO;
 import com.inklet.blog.blog_backend.dto.CreateCommentDTO;
 import com.inklet.blog.blog_backend.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,5 +41,15 @@ public class CommentController {
 
         commentService.deleteCommentById(id, username);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<CommentDTO> updateCommentById(@Valid @RequestBody CommentDTO commentDTO,
+                                                        HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        String username = jwtTokenProvider.getUsernameFromToken(token);
+
+        CommentDTO updatedComment = commentService.updateCommentById(commentDTO, username);
+        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 }
