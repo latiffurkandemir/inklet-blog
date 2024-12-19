@@ -33,7 +33,11 @@ public class CommentController {
 
         return new ResponseEntity<>(commentDTO, HttpStatus.CREATED);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<CommentDTO> findCommentById(@PathVariable int id){
+        CommentDTO commentDTO = commentService.findCommentById(id);
+        return new ResponseEntity<>(commentDTO,HttpStatus.OK);
+    }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCommentById(@PathVariable int id, HttpServletRequest request) {
         String token = request.getHeader("Authorization").substring(7);

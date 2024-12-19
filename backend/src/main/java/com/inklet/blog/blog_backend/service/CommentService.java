@@ -11,4 +11,6 @@ public interface CommentService {
     void deleteCommentById(int id, String username);
 
     CommentDTO updateCommentById(CommentDTO commentDTO, String username);
+
+    CommentDTO findCommentById(int id);
 }

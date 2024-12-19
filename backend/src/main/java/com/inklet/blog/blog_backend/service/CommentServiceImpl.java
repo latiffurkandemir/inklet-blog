@@ -76,8 +76,17 @@ public class CommentServiceImpl implements CommentService {
         }
         comment.setContent(commentDTO.getContent());
         Comment savedComment = commentRepository.save(comment);
-        CommentDTO updated = new CommentDTO(Math.toIntExact(comment.getId()),comment.getContent(),comment.getUser().getUsername());
+        CommentDTO updated = new CommentDTO(Math.toIntExact(comment.getId()), comment.getContent(), comment.getUser().getUsername());
         return updated;
+    }
+
+    @Override
+    public CommentDTO findCommentById(int id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new InputNotFoundException("Comment not found with id: " + id));
+
+        CommentDTO commentDTO = new CommentDTO(Math.toIntExact(comment.getId()), comment.getContent(), comment.getUser().getUsername());
+        return commentDTO;
     }
 
 
