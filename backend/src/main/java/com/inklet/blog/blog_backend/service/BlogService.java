@@ -17,4 +17,6 @@ public interface BlogService {
     BlogDTO updateBlogById(int id, BlogDTO blogDTO, String username);
 
     BlogWithCommentDTO getBlogWithComments(Long id, int page, int size);
+
+    List<BlogListDTO> getAllBlogsForFeed(int page, int size);
 }

@@ -41,6 +41,13 @@ public class BlogController {
         return ResponseEntity.ok(blogs);
     }
 
+    @GetMapping("/all/feed")
+    public ResponseEntity<List<BlogListDTO>> getAllBlogsForFeed(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
+        List<BlogListDTO> blogListDTO = blogService.getAllBlogsForFeed(page, size);
+        return new ResponseEntity<>(blogListDTO, HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}/details")
     public ResponseEntity<BlogWithCommentDTO> getBlogWithComments(

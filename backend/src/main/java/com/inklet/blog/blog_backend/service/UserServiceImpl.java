@@ -58,19 +58,26 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new InputNotFoundException("User '" + username + "' not found"));
 
 
-        user.setNickname(userProfileDTO.getNickname());
-
-
-        if (userRepository.existsByUsername(userProfileDTO.getUsername())) {
-            throw new InputAlreadyExistsException("Username '" + userProfileDTO.getUsername() + "' already taken.");
+        if (userProfileDTO.getNickname() != null && !userProfileDTO.getNickname().equals(user.getNickname())) {
+            user.setNickname(userProfileDTO.getNickname());
         }
 
-        user.setUsername(userProfileDTO.getUsername());
-
-        if (userRepository.existsByEmail(userProfileDTO.getEmail())) {
-            throw new InputAlreadyExistsException("There is a user that has '" + userProfileDTO.getEmail() + "'.");
+        if (userProfileDTO.getUsername() != null && !userProfileDTO.getUsername().equals(user.getUsername())) {
+            if (userRepository.existsByUsername(userProfileDTO.getUsername())) {
+                throw new InputAlreadyExistsException("Username '" + userProfileDTO.getUsername() + "' already taken.");
+            }
+            user.setUsername(userProfileDTO.getUsername());
         }
-        user.setEmail(userProfileDTO.getEmail());
+
+
+        if (userProfileDTO.getEmail() != null && !userProfileDTO.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(userProfileDTO.getEmail())) {
+                throw new InputAlreadyExistsException("There is a user that has '" + userProfileDTO.getEmail() + "'.");
+            }
+
+            user.setEmail(userProfileDTO.getEmail());
+
+        }
 
         User savedUser = userRepository.save(user);
 

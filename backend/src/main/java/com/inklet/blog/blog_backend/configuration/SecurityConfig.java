@@ -28,6 +28,7 @@ public class SecurityConfig {
                                 "/api/blogs/create",
                                 "/api/users/profile",
                                 "/api/blogs/all",
+                                "/api/blogs/all/feed",
                                 "/api/blogs/delete/{id}",
                                 "/api/users/update").permitAll() // permit these endpoints
                         .requestMatchers("/", "/error").permitAll()

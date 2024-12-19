@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -119,6 +120,18 @@ public class BlogServiceImpl implements BlogService {
         blogWithCommentDTO.setCommentList(commentDTOPage);
 
         return blogWithCommentDTO;
+    }
+
+    @Override
+    public List<BlogListDTO> getAllBlogsForFeed(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
+        Page<Blog> blogs = blogRepository.findAll(pageable);
+
+        //converting the blogs into a list of BlogListDTO objects
+        List<BlogListDTO> blogListDTO = blogs.getContent().stream()
+                .map(blog -> new BlogListDTO(blog.getId(), blog.getTitle(), blog.getContent()))
+                .toList();
+        return blogListDTO;
     }
 
 
