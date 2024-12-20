@@ -46,6 +46,7 @@ function NavBar({ onMenuClick }) {
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
+                mr: 0.4,
                 "&:hover": {
                   backgroundColor: "var(--accent-color)",
                   opacity: 0.8,

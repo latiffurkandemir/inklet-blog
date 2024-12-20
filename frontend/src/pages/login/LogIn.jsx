@@ -15,7 +15,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { login } from "../../services/api";
+import { authAPI } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import "./LogIn.scss";
 
@@ -44,21 +44,13 @@ function LogIn() {
     setError(null);
 
     if (!formData.username || !formData.password) {
-      setError("Username and Password are required.");
+      setError("Username and password are required.");
       setLoading(false);
       return;
     }
 
     try {
-      const response = await login(formData);
-      console.log("Login response:", response);
-
-      if (!response.data) {
-        setError("Token alınamadı!");
-        return;
-      }
-
-      localStorage.setItem("token", response.data);
+      await authAPI.login(formData);
 
       if (rememberMe) {
         localStorage.setItem("username", formData.username);
@@ -66,14 +58,9 @@ function LogIn() {
         localStorage.removeItem("username");
       }
 
-      console.log("Token saved, navigating to home...");
-
-      setTimeout(() => {
-        navigate("/home", { replace: true });
-      }, 100);
+      navigate("/home", { replace: true });
     } catch (err) {
-      console.error("Login error:", err);
-      setError(err.response?.data?.message || "Giriş başarısız!");
+      setError(err.response?.data?.message || "Invalid username or password");
     } finally {
       setLoading(false);
     }

@@ -2,15 +2,16 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080/api';
 
+// Axios instance oluşturma
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  timeout: 10000,
 });
-// interceptor
+
+// Request interceptor - JWT token eklemek için
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -19,93 +20,108 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-export const login = async (credentials) => {
-  try {
-    console.log('Login credentials:', credentials);
+// Auth endpoints
+export const authAPI = {
+  login: async (credentials) => {
     const response = await api.post('/auth/login', credentials);
-    console.log('Login response:', response);
-    const token = response.data;
-
-    if (token) {
-      localStorage.setItem('token', token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    if (response.data) {
+      localStorage.setItem('token', response.data);
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data}`;
     }
-
-    return response;
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  }
-};
-
-const token = localStorage.getItem('token');
-if (token) {
-  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-};
-
-export const logout = () => {
-  localStorage.removeItem('token');
-};
-
-export const getPosts = async () => {
-  try {
-    const response = await api.get('/posts');
     return response.data;
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    throw error;
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
   }
 };
 
-export const getPostById = async (id) => {
-  try {
-    const response = await api.get(`/posts/${id}`);
+// User endpoints
+export const userAPI = {
+  signup: async (userData) => {
+    const response = await api.post('/users/signup', userData);
     return response.data;
-  } catch (error) {
-    console.error('Error fetching post:', error);
-    throw error;
-  }
-};
+  },
 
-export const createPost = async (postData) => {
-  try {
-    const response = await api.post('/posts', postData);
+  updateProfile: async (userData) => {
+    const response = await api.put('/users/update', userData);
     return response.data;
-  } catch (error) {
-    console.error('Error creating post:', error);
-    throw error;
-  }
-};
-export const updatePost = async (id, updatedData) => {
-  try {
-    const response = await api.put(`/posts/${id}`, updatedData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating post:', error);
-    throw error;
-  }
-};
-export const deletePost = async (id) => {
-  try {
-    const response = await api.delete(`/posts/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting post:', error);
-    throw error;
-  }
-};
+  },
 
-export const getUserProfile = async () => {
-  try {
+  updatePassword: async (passwordData) => {
+    const response = await api.put('/users/update/password', passwordData);
+    return response.data;
+  },
+
+  getProfile: async () => {
     const response = await api.get('/users/profile');
     return response.data;
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    throw error;
   }
 };
+
+// Blog endpoints
+export const blogAPI = {
+  getAll: async () => {
+    const response = await api.get('/blogs/all');
+    return response.data;
+  },
+
+  getById: async (id) => {
+    const response = await api.get(`/blogs/${id}/details`);
+    return response.data;
+  },
+
+  create: async (blogData) => {
+    const response = await api.post('/blogs/create', blogData);
+    return response.data;
+  },
+
+  update: async (id, blogData) => {
+    const response = await api.put(`/blogs/update/${id}`, blogData);
+    return response.data;
+  },
+
+  delete: async (id) => {
+    const response = await api.delete(`/blogs/delete/${id}`);
+    return response.data;
+  }
+};
+
+// Comment endpoints
+export const commentAPI = {
+  create: async (commentData) => {
+    const response = await api.post('/comments/create', commentData);
+    return response.data;
+  }
+};
+
+// Error handler helper
+const handleError = (error) => {
+  console.error('API Error:', error);
+  if (error.response?.status === 401) {
+    // Token expired veya invalid token durumunda
+    authAPI.logout();
+    window.location.href = '/login';
+  }
+  throw error;
+};
+
+// Her API çağrısı için error handling
+Object.values([authAPI, userAPI, blogAPI, commentAPI]).forEach(api => {
+  Object.keys(api).forEach(key => {
+    const originalFn = api[key];
+    api[key] = async (...args) => {
+      try {
+        return await originalFn(...args);
+      } catch (error) {
+        return handleError(error);
+      }
+    };
+  });
+});
+
+export default api;

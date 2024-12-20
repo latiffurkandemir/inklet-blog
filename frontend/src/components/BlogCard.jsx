@@ -7,7 +7,8 @@ import {
   Button,
 } from "@mui/material";
 
-function BlogCard() {
+function BlogCard({ blog }) {
+  if (!blog) return null;
   return (
     <div className="blog-card">
       <Card
@@ -32,7 +33,7 @@ function BlogCard() {
             variant="h5"
             component="div"
           >
-            Lorem ipsum dolor sit amet,
+            {blog.title}
           </Typography>
           <Typography
             sx={{
@@ -43,14 +44,7 @@ function BlogCard() {
             variant="body2"
             color="text.secondary"
           >
-            consectetur adipiscing elit. Nulla diam turpis, pulvinar at tempor
-            venenatis, ultrices sit amet enim. In at sapien est. Aenean
-            dignissim, erat a suscipit fermentum, lacus ipsum tincidunt nunc,
-            nec varius turpis lectus et urna. Nullam tristique diam turpis, sed
-            pellentesque massa ullamcorper quis. Etiam ullamcorper feugiat
-            eleifend. Sed efficitur, ante vel molestie ultrices, massa massa
-            ultricies dolor, vel posuere tellus eros eu augue. Proin tempus quis
-            turpis ac aliquet.
+            {blog.content}
           </Typography>
         </CardContent>
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -64,6 +58,7 @@ function BlogCard() {
             }}
             color="secondary"
             size="small"
+            variant="outlined"
           >
             Comment
           </Button>
@@ -75,6 +70,7 @@ function BlogCard() {
                 color: "var(--primary-color)",
               },
             }}
+            variant="outlined"
             color="secondary"
             size="small"
           >

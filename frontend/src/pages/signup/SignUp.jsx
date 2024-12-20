@@ -15,7 +15,7 @@ import {
   Alert,
   CircularProgress,
 } from "@mui/material";
-import { createPost } from "../../services/api";
+import { userAPI } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.scss";
 
@@ -49,11 +49,10 @@ function SignUp() {
     }
 
     try {
-      const result = await createPost("api/users/signup", formData);
-      console.log("Success:", result);
+      await userAPI.signup(formData);
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data || "An error occurred.");
+      setError(err.response?.data?.message || "An error occurred.");
       console.error("Error:", err);
     } finally {
       setLoading(false);

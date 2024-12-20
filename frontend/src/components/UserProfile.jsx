@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   useMediaQuery,
@@ -6,17 +6,42 @@ import {
   Typography,
   IconButton,
   Divider,
+  Button,
 } from "@mui/material";
 import { useUser } from "../context/UserContext";
+import { blogAPI } from "../services/api";
 import BlogCard from "./BlogCard";
+import EditProfile from "./EditProfile";
 
 function UserProfile() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+  const [popUp, setPopUp] = useState(false);
+  const [userBlogs, setUserBlogs] = useState([]);
   const isMobile = useMediaQuery("(max-width:900px)");
+
+  useEffect(() => {
+    const fetchUserBlogs = async () => {
+      try {
+        const blogs = await blogAPI.getAll();
+        const userPosts = blogs.filter((blog) => blog.userId === user?.id);
+        setUserBlogs(userPosts);
+      } catch (error) {
+        console.error("Blog posts yüklenirken hata:", error);
+      }
+    };
+
+    if (user?.id) {
+      fetchUserBlogs();
+    }
+  }, [user?.id]);
 
   const getInitial = user?.nickname
     ? user.nickname.charAt(0).toUpperCase()
     : "";
+
+  const togglePop = () => {
+    setPopUp(!popUp);
+  };
 
   return (
     <div className="user-profile">
@@ -60,12 +85,39 @@ function UserProfile() {
           <Typography variant="body1" color="text.secondary">
             {user?.username}
           </Typography>
+
+          <Button
+            sx={{
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "var(--accent-color)",
+                color: "var(--primary-color)",
+              },
+            }}
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={togglePop}
+          >
+            Edit Profile
+          </Button>
+          <EditProfile
+            userData={user}
+            open={popUp}
+            togglePop={togglePop}
+            onSuccess={(updatedUser) => {
+              setUser(updatedUser);
+            }}
+          />
         </Stack>
         <Divider sx={{ mt: 2, mb: 2, borderColor: "var(--accent-color)" }} />
-        <BlogCard />
-        <BlogCard />
-        <BlogCard />
-        <BlogCard />
+        {userBlogs.length > 0 ? (
+          userBlogs.map((blog) => <BlogCard key={blog.id} blog={blog} />)
+        ) : (
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            There are no blog posts yet. Let's create a few blog posts!
+          </Typography>
+        )}
       </Box>
     </div>
   );

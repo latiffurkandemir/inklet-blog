@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { getUserProfile, logout } from "../services/api";
+import { userAPI, authAPI } from "../services/api";
 
 const UserContext = createContext();
 
@@ -9,7 +9,7 @@ export function UserProvider({ children }) {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await authAPI.logout();
       setUser(null);
       localStorage.removeItem("token");
     } catch (error) {
@@ -27,7 +27,7 @@ export function UserProvider({ children }) {
       }
 
       try {
-        const userData = await getUserProfile();
+        const userData = await userAPI.getProfile();
         setUser(userData);
       } catch (error) {
         console.error("Couldn't retrieve user information:", error);
@@ -38,7 +38,7 @@ export function UserProvider({ children }) {
     };
 
     fetchUserData();
-  }, [localStorage.getItem("token")]);
+  }, []);
 
   return (
     <UserContext.Provider
