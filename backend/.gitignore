@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### keystore ###
+/src/main/resources/keystore.jks
+
 ### STS ###
 .apt_generated
 .classpath

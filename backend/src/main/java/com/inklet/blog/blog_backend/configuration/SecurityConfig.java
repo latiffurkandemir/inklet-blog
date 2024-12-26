@@ -1,6 +1,5 @@
 package com.inklet.blog.blog_backend.configuration;
 
-import com.inklet.blog.blog_backend.configuration.JwtAuthenticationFilter; // JWT filter import edilmeli
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,16 +23,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // disable csrf protection
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/signup",
+                                "/api/users/profile",
+                                "/api/users/update",
+                                "/api/users/update/password",
                                 "/api/auth/login",
                                 "/api/blogs/create",
-                                "/api/users/profile",
                                 "/api/blogs/all",
                                 "/api/blogs/all/feed",
+                                "/api/blogs/{id}/details",
                                 "/api/blogs/delete/{id}",
-                                "/api/users/update",
+                                "/api/blogs/update/{id}",
                                 "api/comments/create",
-                                "api/comments/update",
-                                "api/comments/2").permitAll() // permit these endpoints
+                                "api/comments/{id}",
+                                "api/comments/delete/{id}",
+                                "api/comments/update"
+                        ).permitAll() // permit these endpoints
                         .requestMatchers("/", "/error").permitAll()
                         .requestMatchers("/favicon.ico", "/actuator/mappings").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()

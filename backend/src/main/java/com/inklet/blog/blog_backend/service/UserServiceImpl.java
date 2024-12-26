@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         return userProfileDTO;
     }
 
+
     @Override
     @Transactional
     public UserProfileDTO updateUser(String username, UserProfileDTO userProfileDTO) {

@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class BlogBackendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BlogBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BlogBackendApplication.class, args);
+    }
 
 //	@Bean
 //	public CommandLineRunner helloWorldRunner() {
