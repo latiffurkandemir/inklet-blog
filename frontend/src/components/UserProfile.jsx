@@ -8,32 +8,38 @@ import {
   Divider,
   Button,
 } from "@mui/material";
-import { useUser } from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
 import { blogAPI } from "../services/api";
 import BlogCard from "./BlogCard";
 import EditProfile from "./EditProfile";
 
 function UserProfile() {
-  const { user, setUser } = useUser();
+  const { user, setUser } = useAuth();
   const [popUp, setPopUp] = useState(false);
   const [userBlogs, setUserBlogs] = useState([]);
   const isMobile = useMediaQuery("(max-width:900px)");
 
   useEffect(() => {
     const fetchUserBlogs = async () => {
+      if (!user?.username) {
+        console.log("Username can not found!");
+        return;
+      }
+
       try {
-        const blogs = await blogAPI.getAll();
-        const userPosts = blogs.filter((blog) => blog.userId === user?.id);
+        const blogs = await blogAPI.getUserBlog();
+        const userPosts = blogs.filter((blog) => blog.author_id === user.id);
         setUserBlogs(userPosts);
       } catch (error) {
-        console.error("Blog posts yüklenirken hata:", error);
+        console.error("An error occurred while fetching user blogs:", error);
+        setUserBlogs([]);
       }
     };
 
-    if (user?.id) {
+    if (user?.username) {
       fetchUserBlogs();
     }
-  }, [user?.id]);
+  }, []);
 
   const getInitial = user?.nickname
     ? user.nickname.charAt(0).toUpperCase()

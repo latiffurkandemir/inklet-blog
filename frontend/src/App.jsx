@@ -5,7 +5,6 @@ import { ColorModeProvider } from "./context/ColorModeContext";
 import { lightTheme, darkTheme } from "./themes/themes";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { UserProvider } from "./context/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./pages/about/About";
 import SignUp from "./pages/signup/SignUp";
@@ -19,55 +18,53 @@ import "./App.scss";
 function App() {
   return (
     <AuthProvider>
-      <UserProvider>
-        <ColorModeProvider>
-          {(mode) => (
-            <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
-              <CssBaseline />
-              <div className="App">
-                <Routes>
-                  <Route path="/" element={<About />} />
-                  <Route path="/signup" element={<SignUp />} />
-                  <Route path="/login" element={<LogIn />} />
+      <ColorModeProvider>
+        {(mode) => (
+          <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
+            <CssBaseline />
+            <div className="App">
+              <Routes>
+                <Route path="/" element={<About />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<LogIn />} />
 
-                  <Route
-                    path="/home"
-                    element={
-                      <ProtectedRoute>
-                        <MainPage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <ProfilePage />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/create"
-                    element={
-                      <ProtectedRoute>
-                        <CreateBlog />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Routes>
-              </div>
-            </ThemeProvider>
-          )}
-        </ColorModeProvider>
-      </UserProvider>
+                <Route
+                  path="/home"
+                  element={
+                    <ProtectedRoute>
+                      <MainPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/create"
+                  element={
+                    <ProtectedRoute>
+                      <CreateBlog />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </div>
+          </ThemeProvider>
+        )}
+      </ColorModeProvider>
     </AuthProvider>
   );
 }

@@ -48,6 +48,24 @@ function SignUp() {
       }
     }
 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setError(
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+      );
+      setLoading(false);
+      return;
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (!usernameRegex.test(formData.username)) {
+      setError(
+        "Username must be 3-20 characters long and can only contain letters, numbers, and underscores."
+      );
+      setLoading(false);
+      return;
+    }
+
     try {
       await userAPI.signup(formData);
       navigate("/login");
@@ -148,6 +166,7 @@ function SignUp() {
                 variant="outlined"
                 color="accent"
                 onChange={handleChange}
+                helperText="Username must be 3-20 characters long and can only contain letters, numbers, and underscores."
               />
             </FormControl>
             <FormControl>
@@ -164,6 +183,7 @@ function SignUp() {
                 variant="outlined"
                 color="accent"
                 onChange={handleChange}
+                helperText="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
               />
             </FormControl>
             <FormControlLabel

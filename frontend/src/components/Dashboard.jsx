@@ -10,7 +10,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const blogsData = await blogAPI.getAll();
+        const blogsData = await blogAPI.getFeed();
         setBlogs(blogsData);
       } catch (error) {
         console.error("Error fetching blogs:", error);

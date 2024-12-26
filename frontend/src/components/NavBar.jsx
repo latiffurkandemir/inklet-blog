@@ -1,9 +1,9 @@
 import React from "react";
 import { AppBar, Toolbar, IconButton, Typography, Link } from "@mui/material";
-import { useUser } from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
 
 function NavBar({ onMenuClick }) {
-  const { user, loading } = useUser();
+  const { user, loading } = useAuth();
 
   const getInitial = user?.nickname
     ? user.nickname.charAt(0).toUpperCase()

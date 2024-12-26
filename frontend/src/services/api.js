@@ -2,16 +2,14 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080/api';
 
-// Axios instance oluşturma
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: true
 });
 
-// Request interceptor - JWT token eklemek için
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -23,24 +21,37 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Auth endpoints
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const authAPI = {
   login: async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
-    if (response.data) {
-      localStorage.setItem('token', response.data);
-      api.defaults.headers.common['Authorization'] = `Bearer ${response.data}`;
+    try {
+      const response = await api.post('/auth/login', credentials);
+      if (response.data) {
+        localStorage.setItem('token', response.data);
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data}`;
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
-    return response.data;
   },
-
   logout: () => {
     localStorage.removeItem('token');
     delete api.defaults.headers.common['Authorization'];
   }
 };
 
-// User endpoints
 export const userAPI = {
   signup: async (userData) => {
     const response = await api.post('/users/signup', userData);
@@ -53,8 +64,20 @@ export const userAPI = {
   },
 
   updatePassword: async (passwordData) => {
-    const response = await api.put('/users/update/password', passwordData);
-    return response.data;
+    try {
+      const response = await api({
+        method: 'PUT',
+        url: '/users/update/password',
+        data: passwordData,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Password update error:', error);
+      throw error;
+    }
   },
 
   getProfile: async () => {
@@ -63,16 +86,27 @@ export const userAPI = {
   }
 };
 
-// Blog endpoints
 export const blogAPI = {
-  getAll: async () => {
-    const response = await api.get('/blogs/all');
+  getFeed: async () => {
+    const response = await api.get('/blogs/all/feed');
+    console.log('Blog API response:', response.data);
     return response.data;
   },
 
-  getById: async (id) => {
-    const response = await api.get(`/blogs/${id}/details`);
+  getUserBlog: async () => {
+    const response = await api.get('/blogs/all');
+    console.log('Blog API response:', response.data);
     return response.data;
+  },
+
+  getByBlogId: async (blogId) => {
+    try {
+      const response = await api.get(`/blogs/${blogId}/details`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      throw error;
+    }
   },
 
   create: async (blogData) => {
@@ -91,37 +125,19 @@ export const blogAPI = {
   }
 };
 
-// Comment endpoints
 export const commentAPI = {
-  create: async (commentData) => {
-    const response = await api.post('/comments/create', commentData);
-    return response.data;
+  create: async (blogId, commentData) => {
+    try {
+      const response = await api.post('/comments/create', {
+        blog_id: blogId,
+        content: commentData
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error creating comment:', error);
+      throw error;
+    }
   }
 };
-
-// Error handler helper
-const handleError = (error) => {
-  console.error('API Error:', error);
-  if (error.response?.status === 401) {
-    // Token expired veya invalid token durumunda
-    authAPI.logout();
-    window.location.href = '/login';
-  }
-  throw error;
-};
-
-// Her API çağrısı için error handling
-Object.values([authAPI, userAPI, blogAPI, commentAPI]).forEach(api => {
-  Object.keys(api).forEach(key => {
-    const originalFn = api[key];
-    api[key] = async (...args) => {
-      try {
-        return await originalFn(...args);
-      } catch (error) {
-        return handleError(error);
-      }
-    };
-  });
-});
 
 export default api;

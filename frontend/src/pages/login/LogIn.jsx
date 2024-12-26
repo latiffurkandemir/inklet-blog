@@ -15,7 +15,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { authAPI } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./LogIn.scss";
 
@@ -24,6 +24,7 @@ function LogIn() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,24 +44,25 @@ function LogIn() {
     setLoading(true);
     setError(null);
 
-    if (!formData.username || !formData.password) {
-      setError("Username and password are required.");
-      setLoading(false);
-      return;
-    }
-
     try {
-      await authAPI.login(formData);
-
-      if (rememberMe) {
-        localStorage.setItem("username", formData.username);
-      } else {
-        localStorage.removeItem("username");
+      if (!formData.username || !formData.password) {
+        throw new Error("Username and password are required.");
       }
 
+      await login(formData);
       navigate("/home", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid username or password");
+      console.error("Login error details:", {
+        message: err.message,
+        response: err.response,
+        config: err.config,
+      });
+
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Login failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -166,9 +168,8 @@ function LogIn() {
               )}
             </Button>
             <Link
-              href="/password-reset"
-              component="button"
-              type="button"
+              component={Link}
+              to="/password-reset"
               variant="body2"
               sx={{ alignSelf: "center", color: "var(--accent-color)" }}
             >

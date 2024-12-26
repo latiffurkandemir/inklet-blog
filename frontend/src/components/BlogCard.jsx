@@ -6,8 +6,10 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function BlogCard({ blog }) {
+  const navigate = useNavigate();
   if (!blog) return null;
   return (
     <div className="blog-card">
@@ -32,6 +34,7 @@ function BlogCard({ blog }) {
             gutterBottom
             variant="h5"
             component="div"
+            onClick={() => navigate(`/blog/${blog.id}`)}
           >
             {blog.title}
           </Typography>
@@ -45,6 +48,12 @@ function BlogCard({ blog }) {
             color="text.secondary"
           >
             {blog.content}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Author: {blog.author_id}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Created at: {new Date(blog.created_at).toLocaleDateString()}
           </Typography>
         </CardContent>
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>

@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import NavList from "./NavList";
-import { useUser } from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
 
 function Aside({ isOpen, onClose }) {
-  const { user, loading, logout: handleLogout } = useUser();
+  const { user, loading, logout } = useAuth();
   const isMobile = useMediaQuery("(max-width:900px)");
   const navigate = useNavigate();
 
@@ -22,8 +22,8 @@ function Aside({ isOpen, onClose }) {
 
   const handleNavigation = async (route) => {
     if (route === "/logout") {
-      await handleLogout();
-      navigate("/login");
+      await logout();
+      navigate("/login", { replace: true });
       return;
     }
     navigate(route);

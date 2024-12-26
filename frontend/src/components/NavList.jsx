@@ -1,39 +1,85 @@
 import React from "react";
-import { ListItem, ListItemText, ListItemIcon } from "@mui/material";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Link, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonIcon from "@mui/icons-material/Person";
 import CreateIcon from "@mui/icons-material/Create";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useAuth } from "../context/AuthContext";
 
-const navItems = [
-  { text: "Home", icon: <HomeIcon />, route: "/home" },
-  { text: "Profile", icon: <AccountCircleIcon />, route: "/profile" },
-  { text: "Create Blog", icon: <CreateIcon />, route: "/create" },
-  { text: "Settings", icon: <SettingsIcon />, route: "/settings" },
-  { text: "Logout", icon: <LogoutIcon />, route: "/logout" },
-];
+function NavList() {
+  const { logout } = useAuth();
+  const location = useLocation();
 
-function NavItem({ text, icon, onClick }) {
+  const menuItems = [
+    { text: "Home", icon: <HomeIcon />, path: "/home" },
+    { text: "Profile", icon: <PersonIcon />, path: "/profile" },
+    { text: "Create Blog", icon: <CreateIcon />, path: "/create" },
+    { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+  ];
+
   return (
-    <ListItem button onClick={onClick}>
-      <ListItemIcon>{icon}</ListItemIcon>
-      <ListItemText primary={text} />
-    </ListItem>
-  );
-}
-
-export default function NavList({ handleNavigation }) {
-  return (
-    <>
-      {navItems.map(({ text, icon, route }) => (
-        <NavItem
-          key={route}
-          text={text}
-          icon={icon}
-          onClick={() => handleNavigation(route)}
-        />
+    <List>
+      {menuItems.map((item) => (
+        <ListItem
+          key={item.text}
+          button
+          component={Link}
+          to={item.path}
+          sx={{
+            backgroundColor:
+              location.pathname === item.path
+                ? "var(--accent-color)"
+                : "transparent",
+            color:
+              location.pathname === item.path
+                ? "var(--primary-color)"
+                : "inherit",
+            "&:hover": {
+              backgroundColor: "var(--accent-color)",
+              color: "var(--primary-color)",
+            },
+            "& .MuiListItemIcon-root": {
+              color:
+                location.pathname === item.path
+                  ? "var(--primary-color)"
+                  : "inherit",
+            },
+            "&:hover .MuiListItemIcon-root": {
+              color: "var(--primary-color)",
+            },
+          }}
+        >
+          <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItemText primary={item.text} />
+        </ListItem>
       ))}
-    </>
+
+      <ListItem
+        button
+        onClick={logout}
+        sx={{
+          color: "inherit",
+          "& .MuiListItemIcon-root": {
+            color: "inherit",
+          },
+          "&:hover": {
+            backgroundColor: "var(--accent-color)",
+            color: "var(--primary-color)",
+            "& .MuiListItemIcon-root": {
+              color: "var(--primary-color)",
+            },
+          },
+        }}
+      >
+        <ListItemIcon>
+          <LogoutIcon />
+        </ListItemIcon>
+        <ListItemText primary="Logout" />
+      </ListItem>
+    </List>
   );
 }
+
+export default NavList;

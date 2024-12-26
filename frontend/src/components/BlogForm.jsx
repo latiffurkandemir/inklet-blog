@@ -7,6 +7,8 @@ import {
   TextField,
   Box,
   Button,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import { blogAPI } from "../services/api";
 
@@ -17,6 +19,7 @@ function BlogForm() {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const isMobile = useMediaQuery("(max-width:900px)");
 
   const handleChange = (e) => {
@@ -30,14 +33,22 @@ function BlogForm() {
 
     try {
       const result = await blogAPI.create(blog);
-      console.log("Success:", result);
+      console.log("Blog created:", result);
       setBlog({ title: "", content: "" });
+      setShowSuccess(true);
     } catch (err) {
       setError(err.response?.data || "An error occurred.");
       console.error("Error:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseSuccess = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowSuccess(false);
   };
 
   return (
@@ -112,6 +123,22 @@ function BlogForm() {
           {error && <Box sx={{ color: "error.main", mt: 2 }}>{error}</Box>}
         </Stack>
       </Box>
+
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={6000}
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSuccess}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Post successfully created!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
