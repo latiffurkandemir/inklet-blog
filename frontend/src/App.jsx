@@ -14,6 +14,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import CreateBlog from "./pages/create/CreateBlog";
 import Settings from "./pages/settings/Settings";
 import PasswordReset from "./pages/password-reset/PasswordReset";
+import BlogDetail from "./pages/blog/BlogDetail";
 import "./App.scss";
 
 function App() {
@@ -66,6 +67,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <PasswordReset />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/blog/:id"
+                  element={
+                    <ProtectedRoute>
+                      <BlogDetail />
                     </ProtectedRoute>
                   }
                 />
