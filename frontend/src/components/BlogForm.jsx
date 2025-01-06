@@ -76,6 +76,7 @@ function BlogForm() {
               fullWidth
               variant="outlined"
               color="accent"
+              inputProps={{ maxLength: 100 }}
               onChange={handleChange}
             />
           </FormControl>
@@ -87,12 +88,12 @@ function BlogForm() {
               name="content"
               value={blog.content || ""}
               placeholder="Write the content of your blog here. Start with an inspiring opening!"
-              autoFocus
               required
               multiline
               fullWidth
               variant="outlined"
               color="accent"
+              inputProps={{ maxLength: 1000 }}
               onChange={handleChange}
               sx={{
                 "& .MuiInputBase-root": {

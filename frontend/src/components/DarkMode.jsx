@@ -1,18 +1,20 @@
 import React from "react";
 import { useColorMode } from "../context/ColorModeContext";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import "../themes/themes";
 
 export default function DarkMode() {
   const { toggleColorMode } = useColorMode();
 
   return (
-    <div style={{ textAlign: "center", margin: ".4rem" }}>
-      <FormControlLabel
-        control={<Switch onChange={toggleColorMode} color="secondary" />}
-        label="Dark Mode"
-      />
-    </div>
+    <ListItem disablePadding>
+        <ListItemButton onClick={toggleColorMode}>
+          <ListItemIcon>
+            <DarkModeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Dark Mode" secondary="Toggle dark/light theme" />
+        </ListItemButton>
+      </ListItem>
   );
 }

@@ -13,6 +13,7 @@ import MainPage from "./pages/home/MainPage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import CreateBlog from "./pages/create/CreateBlog";
 import Settings from "./pages/settings/Settings";
+import PasswordReset from "./pages/password-reset/PasswordReset";
 import "./App.scss";
 
 function App() {
@@ -57,6 +58,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/password-reset"
+                  element={
+                    <ProtectedRoute>
+                      <PasswordReset />
                     </ProtectedRoute>
                   }
                 />
