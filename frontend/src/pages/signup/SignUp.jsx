@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Checkbox,
-  FormControlLabel,
   Divider,
   FormLabel,
   FormControl,
@@ -14,7 +12,10 @@ import {
   Stack,
   Alert,
   CircularProgress,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { userAPI } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.scss";
@@ -77,8 +78,8 @@ function SignUp() {
     }
   };
 
-  const handleShowPasswordChange = (e) => {
-    setShowPassword(e.target.checked);
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -184,18 +185,21 @@ function SignUp() {
                 color="accent"
                 onChange={handleChange}
                 helperText="Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormControl>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showPassword}
-                  onChange={handleShowPasswordChange}
-                  color="accent"
-                />
-              }
-              label="Show password"
-            />
             <Button
               sx={{ color: "var(--primary-color)" }}
               color="accent"
